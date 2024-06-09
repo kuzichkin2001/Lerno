@@ -8,7 +8,7 @@ using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using RabbitMQ.Client.Events;
 
-namespace Lerno.Bus
+namespace Lerno.BusinessLogic.Bus
 {
     public class BusMessageQueueService : IBusMessageQueueService
     {
@@ -101,12 +101,14 @@ namespace Lerno.Bus
             };
             var action = busMessage.Action;
             var handler = busMessage.Handler;
+            var typeTag = nameof(TBody);
 
             var messageBuilder = new StringBuilder();
             var message = messageBuilder
                 .Append($"message_type={messageType}&")
                 .Append($"action={action}&")
                 .Append($"handler={handler}&")
+                .Append($"type_tag={typeTag}&")
                 .Append($"body={serializedMessage}")
                 .ToString();
 

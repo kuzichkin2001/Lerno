@@ -2,9 +2,9 @@ using Lerno.Ext;
 using Lerno.BusinessLogic.Services;
 using Lerno.BusinessLogic.Interfaces;
 using Lerno.SignalR.Shared.Hubs;
-using Lerno.Bus;
-using AutoMapper;
 using Lerno.Shared.MappingProfiles;
+using Lerno.BusinessLogic.Bus;
+using AutoMapper;
 
 namespace Lerno
 {

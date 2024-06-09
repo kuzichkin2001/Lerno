@@ -4,8 +4,12 @@ namespace Lerno.BusinessLogic.Interfaces
 {
     public interface IUserService
     {
-        IEnumerable<UserDTO> GetUsers();
+        Task<IEnumerable<UserDTO>> GetUsersAsync(CancellationToken cancellationToken);
 
-        IEnumerable<UserDTO> GetUsers(int start, int from);
+        Task<UserDTO> GetUserAsync(string userName, CancellationToken cancellationToken);
+
+        Task<CreateResultDTO> CreateUserAsync(UserDTO userDTO, CancellationToken cancellationToken);
+
+        Task<UpdateResultDTO> UpdateUserAsync(UserDTO userDTO, CancellationToken cancellationToken);
     }
 }

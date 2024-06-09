@@ -10,11 +10,7 @@ namespace Lerno.DataAccess.Interfaces
 
         Teacher GetTeacher(string userName, string passwordHash);
 
-        Teacher GetTeacher(string userNameFilter);
-
         IEnumerable<Teacher> GetAllTeachers();
-
-        IEnumerable<Teacher> GetAllTeachersFiltered(int rating);
 
         void UpdateTeacher(Teacher teacher);
 

@@ -26,8 +26,10 @@ namespace Lerno.DataAccess.Service.Handlers
         {
             return handlerType switch
             {
-                BusMessageHandlerType.User => new UsersBusMessageHandler
-            }
+                BusMessageHandlerType.User => new UsersBusMessageHandler(_usersRepository),
+                BusMessageHandlerType.Student => new StudentsBusMessageHandler(_studentsRepository),
+                BusMessageHandlerType.Teacher => new TeacherBusMessageHandler(_teachersRepository),
+            };
         }
     }
 }

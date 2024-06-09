@@ -1,4 +1,6 @@
-﻿using Lerno.DataAccess.Interfaces;
+﻿using Lerno.DataAccess.DbContexts;
+using Lerno.DataAccess.Interfaces;
+using Lerno.Shared.Commands;
 
 namespace Lerno.DataAccess.Service.Handlers
 {
@@ -6,7 +8,12 @@ namespace Lerno.DataAccess.Service.Handlers
     {
         private readonly IStudentsRepository _studentsRepository;
 
-        public TAnswer Handle<TBody, TAnswer>(string action, TBody body)
+        public StudentsBusMessageHandler(IStudentsRepository studentsRepository)
+        {
+            _studentsRepository = studentsRepository;
+        }
+
+        public TAnswer Handle<TBody, TAnswer>(BusMessage<TBody> busMessage)
             where TBody : class
             where TAnswer : class
         {

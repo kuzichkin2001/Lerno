@@ -10,11 +10,7 @@ namespace Lerno.DataAccess.Interfaces
 
         Student GetStudent(string userName, string passwordHash);
 
-        Student GetStudent(string userNameFilter);
-
         IEnumerable<Student> GetAllStudents();
-
-        IEnumerable<Student> GetAllStudentsFiltered(int rating);
 
         void UpdateStudent(Student student);
 

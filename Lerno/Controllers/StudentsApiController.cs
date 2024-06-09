@@ -1,14 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Lerno.Shared.Enums;
-using Lerno.Shared.Commands;
-using Lerno.Bus;
 using Lerno.Shared.DTOs;
+using Lerno.BusinessLogic.Bus;
 
 namespace Lerno.Controllers
 {
     [Route("api/students")]
     [ApiController]
-    public class StudentsApiController : BaseApiController
+    public class StudentsApiController : ControllerBase
     {
         private readonly IBusMessageQueueService _busDeliveryService;
         private readonly ILogger<StudentsApiController> _logger;
@@ -20,19 +18,13 @@ namespace Lerno.Controllers
             _logger = logger;
         }
 
-        [HttpGet]
-        [Route("{userName}")]
-        public async Task<IActionResult> GetStudentByLoginName([FromBody] GetStudentDTO studentDTO)
+        [HttpPost]
+        [Route("")]
+        public async Task<IActionResult> CreateUserAsync([FromBody] StudentDTO studentDTO)
         {
             try
             {
                 _logger.LogInformation("Started sending message by bus.");
-                
-                var busMessage = ConstructBusMessage(GetStudentDTO, BusMessageType.Command);
-                busMessage.Action = BusStudentAction.GetStudent;
-                busMessage.Handler = BusMessageHandlerType.Student;
-
-                var result = await _busDeliveryService.SendCommandAsync<GetStudentDTO, UserDTO>(busMessage);
                 
                 return Ok(result);
             }

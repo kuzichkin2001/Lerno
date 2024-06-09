@@ -10,11 +10,7 @@ namespace Lerno.DataAccess.Interfaces
 
         User GetUser(string userName, string passwordHash);
 
-        User GetUser(string userNameFilter);
-
         IEnumerable<User> GetAllUsers();
-
-        IEnumerable<User> GetAllUsersFiltered(int rating);
 
         void UpdateUser(User user);
 

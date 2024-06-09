@@ -2,7 +2,7 @@
 
 namespace Lerno.Shared.Commands
 {
-    public class BusMessage<T> where T : class
+    public class BusMessage<TBody> where TBody : class
     {
         public BusMessageType MessageType { get; set; }
 
@@ -10,6 +10,6 @@ namespace Lerno.Shared.Commands
 
         public BusMessageHandlerType Handler { get; set; }
 
-        public T? Body { get; set; }
+        public TBody? Body { get; set; }
     }
 }

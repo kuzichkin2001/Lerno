@@ -8,12 +8,48 @@ namespace Lerno.DataAccess.Repos
     {
         private readonly UnitOfWork _unitOfWork;
 
-        public IEnumerable<User> GetUsers()
+        public void CreateUser(User user)
+        {
+            _unitOfWork.Users.Add(user);
+            _unitOfWork.SaveChanges();
+        }
+
+        public void CreateUsers(IEnumerable<User> users)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<User> GetUsers(int from, int to)
+        public void DeleteUser(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void DeleteUsers(IEnumerable<int> ids)
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<User> GetAllUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public IEnumerable<User> GetAllUsersFiltered(int rating)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUser(string userName, string passwordHash)
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetUser(string userNameFilter)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void UpdateUser(User user)
         {
             throw new NotImplementedException();
         }

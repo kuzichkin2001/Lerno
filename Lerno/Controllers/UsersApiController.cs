@@ -1,5 +1,4 @@
-﻿using Lerno.Bus;
-using Lerno.BusinessLogic.Interfaces;
+﻿using Lerno.BusinessLogic.Interfaces;
 using Lerno.Shared.Commands;
 using Lerno.Shared.Enums;
 using Microsoft.AspNetCore.Mvc;
@@ -8,18 +7,15 @@ namespace Lerno.Controllers
 {
     [Route("api/users")]
     [ApiController]
-    public class UsersApiController : BaseApiController
+    public class UsersApiController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IBusMessageQueueService _busService;
         private readonly ILogger<UsersApiController> _logger;
 
         public UsersApiController(IUserService userService,
-            IBusMessageQueueService busService,
             ILogger<UsersApiController> logger)
         {
             _userService = userService;
-            _busService = busService;
             _logger = logger;
         }
 
@@ -28,15 +24,8 @@ namespace Lerno.Controllers
         public IActionResult SendMessageToBus(string message)
         {
             try
-            {
-                _logger.LogInformation("Sending some message yopta.");
-
-                var busMessage = ConstructBusMessage(message, BusMessageType.Event);
-                busMessage.Action = BusUserAction.GetUser;
-
-                _busService.SendEvent(busMessage);
-                
-                return Ok();
+            {   
+                return Ok(message);
             }
             catch (Exception ex)
             {
@@ -44,15 +33,6 @@ namespace Lerno.Controllers
 
                 throw;
             }
-        }
-
-        [HttpGet]
-        [Route("getAll")]
-        public IActionResult GetAllUsers([FromQuery] int from, [FromQuery] int to)
-        {
-            var users = _userService.GetUsers(from, to);
-
-            return Ok(users);
         }
     }
 }

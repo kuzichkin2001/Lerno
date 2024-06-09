@@ -1,6 +1,6 @@
 ﻿using Lerno.Shared.Commands;
 
-namespace Lerno.Bus
+namespace Lerno.BusinessLogic.Bus
 {
     public interface IBusMessageQueueService
     {

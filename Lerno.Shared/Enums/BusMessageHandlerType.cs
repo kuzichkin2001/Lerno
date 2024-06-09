@@ -2,8 +2,9 @@
 {
     public enum BusMessageHandlerType
     {
-        User = 0,
-        Student = 1,
-        Teacher = 2,
+        Undefined = 0,
+        User = 1,
+        Student = 2,
+        Teacher = 3,
     }
 }
