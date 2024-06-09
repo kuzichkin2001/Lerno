@@ -2,6 +2,7 @@
 using Lerno.Shared.Enums;
 using Lerno.Shared.Commands;
 using Lerno.Bus;
+using Lerno.Shared.DTOs;
 
 namespace Lerno.Controllers
 {
@@ -21,17 +22,17 @@ namespace Lerno.Controllers
 
         [HttpGet]
         [Route("{userName}")]
-        public IActionResult GetStudentByLoginName(string userName)
+        public async Task<IActionResult> GetStudentByLoginName([FromBody] GetStudentDTO studentDTO)
         {
             try
             {
                 _logger.LogInformation("Started sending message by bus.");
                 
-                var busMessage = ConstructBusMessage(userName, BusMessageType.Command);
+                var busMessage = ConstructBusMessage(GetStudentDTO, BusMessageType.Command);
                 busMessage.Action = BusStudentAction.GetStudent;
                 busMessage.Handler = BusMessageHandlerType.Student;
 
-                var result = _busDeliveryService.SendCommand<string, string>(busMessage);
+                var result = await _busDeliveryService.SendCommandAsync<GetStudentDTO, UserDTO>(busMessage);
                 
                 return Ok(result);
             }
