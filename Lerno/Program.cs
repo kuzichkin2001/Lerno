@@ -29,7 +29,8 @@ namespace Lerno
             builder.Services.AddSwaggerGen();
             builder.Services.AddSignalR();
             builder.Services.AddScoped<IUserService, UserService>();
-            builder.Services.AddScoped<IBusMessageQueueService, BusMessageQueueService>();
+            builder.Services.AddScoped<IStudentsService, StudentsService>();
+            builder.Services.AddSingleton<IBusMessageQueueService, BusMessageQueueService>();
             builder.Services.AddSingleton(mapperConfiguration.CreateMapper());
 
             var app = builder.Build();

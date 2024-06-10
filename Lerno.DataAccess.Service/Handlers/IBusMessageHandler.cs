@@ -4,8 +4,8 @@ namespace Lerno.DataAccess.Service.Handlers
 {
     public interface IBusMessageHandler
     {
-        TAnswer Handle<TBody, TAnswer>(BusMessage<TBody> busMessage)
-            where TBody : class
-            where TAnswer : class;
+        Task HandleEventAsync(string messageContent, CancellationToken cancellationToken = default);
+
+        Task<object> HandleCommandAsync(string messageContent, CancellationToken cancellationToken = default);
     }
 }

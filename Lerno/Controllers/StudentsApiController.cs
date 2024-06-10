@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Lerno.Shared.DTOs;
 using Lerno.BusinessLogic.Bus;
+using Lerno.BusinessLogic.Interfaces;
 
 namespace Lerno.Controllers
 {
@@ -8,14 +9,14 @@ namespace Lerno.Controllers
     [ApiController]
     public class StudentsApiController : ControllerBase
     {
-        private readonly IBusMessageQueueService _busDeliveryService;
         private readonly ILogger<StudentsApiController> _logger;
+        private readonly IStudentsService _studentsLogic;
 
-        public StudentsApiController(IBusMessageQueueService busDeliveryService,
-            ILogger<StudentsApiController> logger)
+        public StudentsApiController(ILogger<StudentsApiController> logger,
+            IStudentsService studentsLogic)
         {
-            _busDeliveryService = busDeliveryService;
             _logger = logger;
+            _studentsLogic = studentsLogic;
         }
 
         [HttpPost]
@@ -26,7 +27,7 @@ namespace Lerno.Controllers
             {
                 _logger.LogInformation("Started sending message by bus.");
                 
-                return Ok(result);
+                return Ok(studentDTO);
             }
             catch (Exception ex)
             {
@@ -34,6 +35,20 @@ namespace Lerno.Controllers
 
                 throw;
             }
+        }
+
+        [HttpGet]
+        [Route("")]
+        public async Task<IActionResult> GetUserOfStudent(
+            [FromQuery] string userName,
+            [FromQuery] string password,
+            CancellationToken cancellationToken)
+        {
+            var dto = new GetStudentDTO { UserName = userName, PasswordHash = password.GetHashCode().ToString() };
+            var response = await _studentsLogic.GetUserOfStudentAsync(dto, cancellationToken)
+                .ConfigureAwait(false);
+
+            return Ok(response);
         }
     }
 }

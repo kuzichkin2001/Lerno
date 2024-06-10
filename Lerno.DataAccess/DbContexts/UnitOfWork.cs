@@ -5,7 +5,7 @@ using Lerno.Configuration.Options;
 
 namespace Lerno.DataAccess.DbContexts
 {
-    public class UnitOfWork : DbContext, IUnitOfWork
+    public class UnitOfWork : DbContext
     {
         public DbSet<Teacher> Teachers { get; set; }
         public DbSet<Student> Students { get; set; }

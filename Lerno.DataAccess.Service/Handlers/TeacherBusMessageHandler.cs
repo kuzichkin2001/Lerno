@@ -1,24 +1,24 @@
-﻿using Lerno.DataAccess.DbContexts;
-using Lerno.DataAccess.Interfaces;
+﻿using Lerno.DataAccess.Interfaces;
 
 namespace Lerno.DataAccess.Service.Handlers
 {
     public class TeacherBusMessageHandler : IBusMessageHandler
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly ITeachersRepository _teachersRepository;
 
-        public TeacherBusMessageHandler(ITeachersRepository teachersRepository, IUnitOfWork unitOfWork)
+        public TeacherBusMessageHandler(ITeachersRepository teachersRepository)
         {
             _teachersRepository = teachersRepository;
-            _unitOfWork = unitOfWork;
         }
 
-        public TAnswer Handle<TBody, TAnswer>(string action, TBody body)
-            where TBody : class
-            where TAnswer : class
+        public Task<object> HandleCommandAsync(string messageContent, CancellationToken cancellationToken = default)
         {
-            
+            return Task.FromResult(new object());
+        }
+
+        public Task HandleEventAsync(string messageContent, CancellationToken cancellationToken = default)
+        {
+            return Task.CompletedTask;
         }
     }
 }

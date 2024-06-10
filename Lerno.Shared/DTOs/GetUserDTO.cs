@@ -2,6 +2,8 @@
 {
     public class GetStudentDTO
     {
-        public string UserName { get; set; }
+        public required string UserName { get; set; }
+
+        public required string PasswordHash { get; set; }
     }
 }

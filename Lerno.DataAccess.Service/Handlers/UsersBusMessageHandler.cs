@@ -1,6 +1,4 @@
-﻿using Lerno.DataAccess.DbContexts;
-using Lerno.DataAccess.Interfaces;
-using Lerno.Shared.Commands;
+﻿using Lerno.DataAccess.Interfaces;
 
 namespace Lerno.DataAccess.Service.Handlers
 {
@@ -13,11 +11,14 @@ namespace Lerno.DataAccess.Service.Handlers
             _usersRepository = usersRepository;
         }
 
-        public TAnswer Handle<TBody, TAnswer>(BusMessage<TBody> busMessage)
-            where TBody : class
-            where TAnswer : class
+        public Task<object> HandleCommandAsync(string messageContent, CancellationToken cancellationToken = default)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public Task HandleEventAsync(string messageContent, CancellationToken cancellationToken = default)
+        {
+            throw new NotImplementedException();
         }
     }
 }

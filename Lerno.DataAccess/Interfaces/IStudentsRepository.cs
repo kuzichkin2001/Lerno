@@ -4,18 +4,18 @@ namespace Lerno.DataAccess.Interfaces
 {
     public interface IStudentsRepository
     {
-        void CreateStudent(Student student);
+        Task CreateStudentAsync(Student student, CancellationToken cancellationToken);
 
-        void CreateStudents(IEnumerable<Student> students);
+        Task CreateStudentsAsync(IEnumerable<Student> students, CancellationToken cancellationToken);
 
-        Student GetStudent(string userName, string passwordHash);
+        Task<User> GetUserOfStudentAsync(string userName, string passwordHash, CancellationToken cancellationToken);
 
-        IEnumerable<Student> GetAllStudents();
+        Task<IEnumerable<Student>> GetAllStudents(CancellationToken cancellationToken);
 
-        void UpdateStudent(Student student);
+        Task UpdateStudent(Student student, CancellationToken cancellationToken);
 
-        void DeleteStudent(int id);
+        Task DeleteStudent(int id, CancellationToken cancellationToken);
 
-        void DeleteStudents(IEnumerable<int> ids);
+        Task DeleteStudents(IEnumerable<int> ids, CancellationToken cancellationToken);
     }
 }

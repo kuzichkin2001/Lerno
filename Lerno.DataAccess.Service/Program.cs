@@ -16,9 +16,10 @@ namespace Lerno.DataAccess.Service
             var configuration = builder.Configuration;
 
             builder.Services.AddDataAccessServiceConfiguration(configuration);
-            builder.Services.AddSingleton<IUnitOfWork, UnitOfWork>();
+            builder.Services.AddSingleton<UnitOfWork>();
             builder.Services.AddTransient<IUsersRepository, UsersRepository>();
             builder.Services.AddTransient<IStudentsRepository, StudentsRepository>();
+            builder.Services.AddTransient<ITeachersRepository, TeachersRepository>();
             builder.Services.AddTransient<IBusMessageHandlerFactory, BusMessageHandlerFactory>();
 
             builder.Services.AddHostedService<BusMessageListener>();

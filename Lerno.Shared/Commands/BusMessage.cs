@@ -10,6 +10,8 @@ namespace Lerno.Shared.Commands
 
         public BusMessageHandlerType Handler { get; set; }
 
+        public string TypeTag { get; set; }
+
         public TBody? Body { get; set; }
     }
 }

@@ -4,12 +4,13 @@ using Lerno.Shared.Models;
 
 namespace Lerno.DataAccess.Repos
 {
-    public class UsersRepository : IUsersRepository
+    public class UsersRepository : BaseRepository, IUsersRepository
     {
-        private readonly UnitOfWork _unitOfWork;
+        public UsersRepository(UnitOfWork unitOfWork) : base(unitOfWork) { }
 
         public void CreateUser(User user)
         {
+
             _unitOfWork.Users.Add(user);
             _unitOfWork.SaveChanges();
         }
@@ -31,7 +32,7 @@ namespace Lerno.DataAccess.Repos
 
         public IEnumerable<User> GetAllUsers()
         {
-            throw new NotImplementedException();
+            return _unitOfWork.Users.Take(10);
         }
 
         public IEnumerable<User> GetAllUsersFiltered(int rating)

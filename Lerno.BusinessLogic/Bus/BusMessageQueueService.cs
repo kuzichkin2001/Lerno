@@ -2,11 +2,11 @@
 using System.Text;
 using System.Text.Json;
 using Lerno.Shared.Commands;
-using Lerno.Shared.Enums;
 using Lerno.Configuration.Options;
 using Microsoft.Extensions.Options;
 using System.Collections.Concurrent;
 using RabbitMQ.Client.Events;
+using Microsoft.Extensions.Logging;
 
 namespace Lerno.BusinessLogic.Bus
 {
@@ -18,13 +18,15 @@ namespace Lerno.BusinessLogic.Bus
         private readonly IModel _channel;
         private readonly ConcurrentDictionary<string, TaskCompletionSource> _eventTasksMapper = new();
         private readonly ConcurrentDictionary<string, TaskCompletionSource<object>> _commandTasksMapper = new();
+        private readonly ILogger<BusMessageQueueService> _logger;
 
         private readonly string EVENTS_DEFAULT_QUEUE = "Lerno_RPC_events";
         private readonly string COMMANDS_DEFAULT_QUEUE = "Lerno_RPC_commands";
 
-        public BusMessageQueueService(IOptions<BusOptions> busOptions)
+        public BusMessageQueueService(IOptions<BusOptions> busOptions, ILogger<BusMessageQueueService> logger)
         {
             _busOptions = busOptions.Value;
+            _logger = logger;
 
             _connectionFactory = new ConnectionFactory()
             {
@@ -37,15 +39,19 @@ namespace Lerno.BusinessLogic.Bus
             _connection = _connectionFactory.CreateConnection();
             _channel = _connection.CreateModel();
 
-            _channel.QueueDeclare(queue: EVENTS_DEFAULT_QUEUE);
-            _channel.QueueDeclare(queue: COMMANDS_DEFAULT_QUEUE);
+            _channel.QueueDeclare(queue: EVENTS_DEFAULT_QUEUE, exclusive: false);
+            _channel.QueueDeclare(queue: COMMANDS_DEFAULT_QUEUE, exclusive: false);
 
             var consumer = new EventingBasicConsumer(_channel);
             consumer.Received += (_, eventArgs) =>
             {
+                var content = Encoding.UTF8.GetString(eventArgs.Body.ToArray());
+
+                _logger.LogInformation($"Получен ответ: {content}");
+
                 if (eventArgs.RoutingKey.Equals(EVENTS_DEFAULT_QUEUE))
                 {
-                    if (_eventTasksMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out var etcs)) return;
+                    if (!_eventTasksMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out var etcs)) return;
 
                     if (etcs is not null)
                     {
@@ -55,16 +61,21 @@ namespace Lerno.BusinessLogic.Bus
                     return;
                 }
 
-                if (_commandTasksMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out var ctcs)) return;
+                if (!_commandTasksMapper.TryRemove(eventArgs.BasicProperties.CorrelationId, out var ctcs)) return;
 
                 var body = eventArgs.Body.ToArray();
-                var response = Encoding.UTF8.GetString(body);
+                var stringResponse = Encoding.UTF8.GetString(body);
 
                 if (ctcs is not null)
                 {
-                    ctcs.TrySetResult(response);
+                    ctcs.TrySetResult(stringResponse);
                 }
+
+                _channel.BasicAck(eventArgs.DeliveryTag, false);
             };
+
+            _channel.BasicConsume(EVENTS_DEFAULT_QUEUE, false, consumer);
+            _channel.BasicConsume(COMMANDS_DEFAULT_QUEUE, false, consumer);
         }
 
         public async Task<TAnswer> SendCommandAsync<TBody, TAnswer>(BusMessage<TBody> busMessage,
@@ -74,8 +85,8 @@ namespace Lerno.BusinessLogic.Bus
         {
             var message = ConstructMessage(busMessage);
 
-            var result = await SendCommandAsync(message, cancellationToken).ConfigureAwait(false);
-            var castedResult = (TAnswer)result;
+            var result = (string)await SendCommandAsync(message, cancellationToken).ConfigureAwait(false);
+            var castedResult = JsonSerializer.Deserialize<TAnswer>(result);
 
             return castedResult;
         }
@@ -93,15 +104,10 @@ namespace Lerno.BusinessLogic.Bus
             where TBody : class
         {
             var serializedMessage = JsonSerializer.Serialize(busMessage.Body);
-            var messageType = busMessage.MessageType switch
-            {
-                BusMessageType.Object => "object",
-                BusMessageType.Command => "command",
-                BusMessageType.Event => "event"
-            };
+            var messageType = busMessage.MessageType.ToString("D");
             var action = busMessage.Action;
-            var handler = busMessage.Handler;
-            var typeTag = nameof(TBody);
+            var handler = busMessage.Handler.ToString("D");
+            var typeTag = typeof(TBody).FullName;
 
             var messageBuilder = new StringBuilder();
             var message = messageBuilder
@@ -113,6 +119,21 @@ namespace Lerno.BusinessLogic.Bus
                 .ToString();
 
             return message;
+        }
+
+        private Dictionary<string, string> ParseToDictionary(string messageContent)
+        {
+            var parameters = new Dictionary<string, string>();
+            var parts = messageContent.Split('&');
+            foreach (var part in parts)
+            {
+                var kvp = part.Split('=');
+                var (key, value) = (kvp[0], kvp[1]);
+
+                parameters[key] = value;
+            }
+
+            return parameters;
         }
 
         private Task SendEventAsync(string message, CancellationToken cancellationToken)

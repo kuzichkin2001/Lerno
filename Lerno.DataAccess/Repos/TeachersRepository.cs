@@ -1,10 +1,13 @@
-﻿using Lerno.DataAccess.Interfaces;
+﻿using Lerno.DataAccess.DbContexts;
+using Lerno.DataAccess.Interfaces;
 using Lerno.Shared.Models;
 
 namespace Lerno.DataAccess.Repos
 {
-    public class TeachersRepository : ITeachersRepository
+    public class TeachersRepository : BaseRepository, ITeachersRepository
     {
+        public TeachersRepository(UnitOfWork unitOfWork) : base(unitOfWork) { }
+
         public void CreateTeacher(Teacher teacher)
         {
             throw new NotImplementedException();

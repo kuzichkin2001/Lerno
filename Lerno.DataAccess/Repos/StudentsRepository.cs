@@ -1,51 +1,49 @@
-﻿using Lerno.DataAccess.Interfaces;
+﻿using Lerno.DataAccess.DbContexts;
+using Lerno.DataAccess.Interfaces;
 using Lerno.Shared.Models;
 
 namespace Lerno.DataAccess.Repos
 {
-    public class StudentsRepository : IStudentsRepository
+    public class StudentsRepository : BaseRepository, IStudentsRepository
     {
-        public void CreateStudent(Student student)
+        public StudentsRepository(UnitOfWork unitOfWork) : base(unitOfWork) { }
+
+        public Task CreateStudentAsync(Student student, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void CreateStudents(IEnumerable<Student> students)
+        public Task CreateStudentsAsync(IEnumerable<Student> students, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteStudent(int id)
+        public Task DeleteStudent(int id, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public void DeleteStudents(IEnumerable<int> ids)
+        public Task DeleteStudents(IEnumerable<int> ids, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Student> GetAllStudents()
+        public Task<IEnumerable<Student>> GetAllStudents(CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Student> GetAllStudentsFiltered(int rating)
+        public async Task<User> GetUserOfStudentAsync(string userName, string passwordHash, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+            return new User()
+            {
+                Id = 1,
+                FirstName = userName,
+                LastName = passwordHash,
+            };
         }
 
-        public Student GetStudent(string userName, string passwordHash)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Student GetStudent(string userNameFilter)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void UpdateStudent(Student student)
+        public Task UpdateStudent(Student student, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

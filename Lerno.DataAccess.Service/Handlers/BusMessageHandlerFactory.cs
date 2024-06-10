@@ -6,17 +6,14 @@ namespace Lerno.DataAccess.Service.Handlers
 {
     public class BusMessageHandlerFactory : IBusMessageHandlerFactory
     {
-        private readonly IUnitOfWork _unitOfWork;
         private readonly IUsersRepository _usersRepository;
         private readonly IStudentsRepository _studentsRepository;
         private readonly ITeachersRepository _teachersRepository;
 
-        public BusMessageHandlerFactory(IUnitOfWork unitOfWork,
-            IUsersRepository usersRepository,
+        public BusMessageHandlerFactory(IUsersRepository usersRepository,
             IStudentsRepository studentsRepository,
             ITeachersRepository teachersRepository)
         {
-            _unitOfWork = unitOfWork;
             _usersRepository = usersRepository;
             _studentsRepository = studentsRepository;
             _teachersRepository = teachersRepository;
